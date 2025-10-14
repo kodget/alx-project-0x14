@@ -93,29 +93,174 @@ alx-movie-app/
 └── tsconfig.json              # TypeScript configuration
 ```
 
-## API Integration
+## API Overview
 
-### MoviesDatabase API
+The MoviesDatabase API provides comprehensive access to movie and TV show data including titles, cast information, ratings, and metadata. It offers powerful search and filtering capabilities with support for pagination, making it ideal for building movie discovery applications. The API returns structured JSON data with detailed information about entertainment content from various sources.
 
-The application integrates with the MoviesDatabase API using the following endpoints:
+## Version
 
-- **`/titles`** - Main endpoint for fetching movie data
-  - Supports filtering by year and genre
-  - Implements pagination for browsing results
-  - Requires API key authentication
+API Version: v1
+Base URL: `https://moviesdatabase.p.rapidapi.com`
 
-### Authentication
+## Available Endpoints
 
-- API key authentication via headers
-- Environment variable storage for secure API key management
-- Server-side API routes to protect client-side exposure
+- **`/titles`** - Retrieve movie and TV show titles with filtering options
+- **`/titles/search/title/{title}`** - Search for titles by name
+- **`/titles/{id}`** - Get detailed information about a specific title
+- **`/titles/random`** - Get random movie/TV show suggestions
+- **`/titles/utils/genres`** - Retrieve available genres
+- **`/titles/utils/countries`** - Get list of available countries
+- **`/titles/utils/languages`** - Fetch supported languages
 
-### Error Handling
+## Request and Response Format
 
-- Loading states for better user experience
-- Try/catch blocks in API routes
-- Status code validation for API responses
-- Type guards for API data validation
+### Request Structure
+```http
+GET /titles?year=2023&genre=Action&limit=10&page=1
+Host: moviesdatabase.p.rapidapi.com
+X-RapidAPI-Key: YOUR_API_KEY
+X-RapidAPI-Host: moviesdatabase.p.rapidapi.com
+```
+
+### Response Structure
+```json
+{
+  "page": 1,
+  "next": "/titles?year=2023&genre=Action&limit=10&page=2",
+  "entries": 250,
+  "results": [
+    {
+      "_id": "tt1234567",
+      "id": "tt1234567",
+      "primaryImage": {
+        "id": "rm123456789",
+        "width": 1080,
+        "height": 1600,
+        "url": "https://example.com/image.jpg",
+        "caption": {
+          "plainText": "Movie Title (2023)"
+        }
+      },
+      "titleType": {
+        "text": "Movie",
+        "id": "movie",
+        "isSeries": false,
+        "isEpisode": false
+      },
+      "titleText": {
+        "text": "Example Movie Title"
+      },
+      "originalTitleText": {
+        "text": "Example Movie Title"
+      },
+      "releaseYear": {
+        "year": 2023,
+        "endYear": null
+      },
+      "releaseDate": {
+        "day": 15,
+        "month": 6,
+        "year": 2023
+      }
+    }
+  ]
+}
+```
+
+## Authentication
+
+The MoviesDatabase API uses RapidAPI authentication system:
+
+### Required Headers
+```http
+X-RapidAPI-Key: YOUR_API_KEY
+X-RapidAPI-Host: moviesdatabase.p.rapidapi.com
+```
+
+### Setup Steps
+1. Sign up for a RapidAPI account at https://rapidapi.com
+2. Subscribe to the MoviesDatabase API
+3. Copy your API key from the dashboard
+4. Add the key to your environment variables
+
+### Environment Configuration
+```env
+MOVIES_API_KEY=your_rapidapi_key_here
+```
+
+## Error Handling
+
+### Common Error Responses
+
+**401 Unauthorized**
+```json
+{
+  "message": "Invalid API key. Go to https://docs.rapidapi.com/docs/keys for more info."
+}
+```
+
+**403 Forbidden**
+```json
+{
+  "message": "You are not subscribed to this API."
+}
+```
+
+**429 Too Many Requests**
+```json
+{
+  "message": "Rate limit exceeded. Try again later."
+}
+```
+
+**500 Internal Server Error**
+```json
+{
+  "message": "Internal server error. Please try again later."
+}
+```
+
+### Error Handling Best Practices
+- Implement exponential backoff for rate limit errors
+- Cache successful responses to reduce API calls
+- Validate API responses before processing
+- Provide fallback UI states for failed requests
+- Log errors for debugging purposes
+
+## Usage Limits and Best Practices
+
+### Rate Limits
+- **Free Tier**: 100 requests per month
+- **Basic Plan**: 1,000 requests per month
+- **Pro Plan**: 10,000 requests per month
+- **Ultra Plan**: 100,000 requests per month
+
+### Best Practices
+
+1. **Caching Strategy**
+   - Cache API responses for at least 1 hour
+   - Use browser localStorage for client-side caching
+   - Implement server-side caching for better performance
+
+2. **Request Optimization**
+   - Use pagination to limit response size
+   - Request only necessary fields when possible
+   - Batch multiple requests when appropriate
+
+3. **Error Recovery**
+   - Implement retry logic with exponential backoff
+   - Provide meaningful error messages to users
+   - Use circuit breaker pattern for API failures
+
+4. **Security**
+   - Never expose API keys in client-side code
+   - Use environment variables for sensitive data
+   - Implement server-side proxy for API calls
+
+5. **Performance**
+   - Use CDN for image assets when possible
+   - Implement lazy loading for movie posters
+   - Optimize API calls with debouncing for search
 
 ## Development Guidelines
 
