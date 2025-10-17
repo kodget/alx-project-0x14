@@ -1,8 +1,13 @@
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter, faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { useEffect, useState } from "react";
 
 const Footer: React.FC = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <footer className="bg-[#171D22] text-white py-10 px-6 md:px-10 lg:px-20">
       <div className="flex flex-col md:flex-row justify-between items-center w-full">
@@ -19,15 +24,19 @@ const Footer: React.FC = () => {
         </nav>
 
         <div className="flex space-x-4">
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#E2D609]">
-            <FontAwesomeIcon icon={faTwitter} size="lg" />
-          </a>
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#E2D609]">
-            <FontAwesomeIcon icon={faFacebook} size="lg" />
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#E2D609]">
-            <FontAwesomeIcon icon={faInstagram} size="lg" />
-          </a>
+          {isClient && (
+            <>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#E2D609] text-lg">
+                📱
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#E2D609] text-lg">
+                📘
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#E2D609] text-lg">
+                📷
+              </a>
+            </>
+          )}
         </div>
       </div>
 
