@@ -17,28 +17,34 @@ const Movies: React.FC<MProps> = () => {
 
   const fectchMovies = useCallback(async () => {
     setLoading(true);
-    const response = await fetch("/api/fetch-movies", {
-      method: "POST",
-      body: JSON.stringify({
-        page,
-        year,
-        genre: genre === "All" ? null : genre,
-      }),
-      headers: {
-        "Content-Type": "application/json; charset = utf-8",
-      },
-    });
+    try {
+      const response = await fetch("/api/fetch-movies", {
+        method: "POST",
+        body: JSON.stringify({
+          page,
+          year,
+          genre: genre === "All" ? null : genre,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        console.error("API request failed:", response.status);
+        setLoading(false);
+        return;
+      }
+
+      const data = await response.json();
+      const results = data.movies || [];
+      setMovies(results);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+      setMovies([]);
+    } finally {
       setLoading(false);
-      throw new Error("Something went wrong");
     }
-
-    const data = await response.json();
-    const results = data.movies;
-    console.log(results);
-    setMovies(results);
-    setLoading(false);
   }, [page, year, genre]);
 
   useEffect(() => {
